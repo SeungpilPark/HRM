@@ -1,5 +1,7 @@
 # OCE HRM
 
+[Ambari Install](document/ambari.md)
+
 [Installation](document/install.md)
 
 [Tutorial](document/tutorials.md)
