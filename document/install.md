@@ -9,6 +9,7 @@
 카우치 데이터베이스의 디펜던시를 인스톨합니다.
 
 ```
+sudo yum install gcc gcc-c++
 sudo yum install autoconf
 sudo yum install autoconf-archive
 sudo yum install automake
@@ -31,6 +32,12 @@ openssl 을 설치하지 않을 경우 카우치 데이터베이스 인스톨 �
 
 ```
 sudo yum install openssl-devel.x86_64
+```
+
+No curses library functions found 에러 문구가 난다면 다음을 추가로 설치합니다.
+
+```
+sudo yum install ncurses-devel
 ```
 
 #### install javac
@@ -66,12 +73,51 @@ $ ./configure
 $ make && make install
 ```
 
+#### install Mozilla SpiderMonkey
+
+Mozilla SpiderMonkey 를 설치합니다.
+
+```
+$ wget http://ftp.mozilla.org/pub/mozilla.org/js/mozjs17.0.0.tar.gz
+$ tar -xvf mozjs17.0.0.tar.gz
+$ cd mozjs17.0.0/js/src/
+$ ./configure
+$ make && make install
+```
+
+SpiderMonkey 빌드 이후 couchdb 인스톨과정에서 lib 을 찾지 못할 경우, 패키지 인스톨 방식을 추천합니다.
+
+```
+$ yum install js-devel
+```
+
+만일 No package js-devel available. 메시지가 나온다면, 다음의 yum 레파지토리를 추가하도록 합니다.
+
+```
+$ vi /etc/yum.repos.d/rpmforge.repo
+# Name: RPMforge RPM Repository for Red Hat Enterprise 5 - dag
+# URL: http://rpmforge.net/
+[rpmforge]
+name = Red Hat Enterprise $releasever - RPMforge.net - dag
+mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=epel-6&arch=$basearch
+enabled = 1
+protect = 0
+gpgcheck = 0
+
+yum clean all
+yum install js-devel
+```
+
 ##### install couchdb
 
 카우치 데이터베이스 소스를 빌드하고 설치합니다.
 
 ```
 $ wget http://apache.tt.co.kr/couchdb/source/1.6.1/apache-couchdb-1.6.1.tar.gz
+
+$ tar xvf apache-couchdb-1.6.1.tar.gz
+
+$ cd apache-couchdb-1.6.1
 
 $ ./configure
 
@@ -83,7 +129,6 @@ $ sudo chown -R couchdb:couchdb /usr/local/var/lib/couchdb /usr/local/var/log/co
 $ sudo ln -sf /usr/local/etc/rc.d/couchdb /etc/init.d/couchdb
 $ sudo chkconfig --add couchdb
 $ sudo chkconfig couchdb on
-$ sudo vi /usr/local/etc/couchdb/local.ini
 $ sudo service couchdb start
 
 # Test
