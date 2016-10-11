@@ -46,7 +46,7 @@
     <div class="container content profile">
         <div class="row">
             <div class="col-md-12">
-                <iframe src="http://123.214.65.142:8081" style="width: 100%; height: 600px" ></iframe>
+                <iframe src="${host}" style="width: 100%; height: 600px" ></iframe>
             </div>
         </div>
     </div>

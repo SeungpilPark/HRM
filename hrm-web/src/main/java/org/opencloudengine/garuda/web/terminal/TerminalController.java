@@ -34,7 +34,9 @@ public class TerminalController {
      */
     @RequestMapping(value = "terminal", method = RequestMethod.GET)
     public ModelAndView index(HttpSession session) {
-
-        return new ModelAndView("terminal/terminal");
+        String host = config.getProperty("system.web.terminal.host");
+        ModelAndView modelAndView = new ModelAndView("terminal/terminal");
+        modelAndView.addObject("host", host);
+        return modelAndView;
     }
 }
