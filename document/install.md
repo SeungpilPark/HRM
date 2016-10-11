@@ -334,6 +334,9 @@ application.home=/root/hrm/
 system.hdfs.super.user=hdfs
 ==> 하둡 시스템 슈퍼유저 (하둡을 인스톨 할 때 지정된 값)
 
+system.web.terminal.host=http://server-ip:port
+==> 웹 콘솔 연결용 호스트 (Default: 하둡네임노드:8081)
+
 ###########################################
 ## Command Configuration
 ###########################################
@@ -372,6 +375,115 @@ $ sh bin/startup.sh
 ```
 
 
+### 웹 콘솔 설치하기
+
+웹 콘솔을 사용하기 원하실 경우 다음의 설치 과정을 진행하시기 바랍니다.
+
+리모트 웹 터미널은 nodejs를 기반으로 동작하며 리모트 웹 터미널로 접속하고자 하는 서버에 nodejs를 포함한 관련 모듈을 설치해야 합니다.
 
 
+리모트 웹 터미널을 설치하기 위해서 OS에 따라서 다음을 참고하여 nodejs를 설치하도록 합니다.
+
+#### Nodejs install
+
+Centos 의 경우 다음의 커맨드로 설치합니다.
+
+```
+# yum install nodejs
+# yum install npm
+```
+Ubuntu의 경우 다음의 커맨드로 설치할 수 있습니다.
+
+```
+# apt-get install nodejs npm
+```
+
+Ubuntu의 경우 `/usr/bin/nodejs` 로 설치가 되지만 `/usr/bin/node` 로 링크를 생성해야 합니다.
+
+```
+# ln -s /usr/bin/nodejs /usr/bin/node
+```
+
+Ubuntu 계열은 다음의 패키지를 추가설치합니다.
+
+```
+# apt-get install nodejs-legacy
+# apt-get install npm
+# apt-get install g++
+```
+
+#### npm 패키지 설치하기
+
+```
+# npm install npm -g
+npm@2.12.1 /usr/local/lib/node_modules/npm
+
+# npm install async -g
+async@0.9.0 /usr/local/lib/node_modules/async
+
+# npm install term.js -g
+term.js@0.0.4 /usr/local/lib/node_modules/term.js
+
+# npm install express@3.X.X -g
+express@3.20.2 /usr/local/lib/node_modules/express
+├── basic-auth@1.0.0
+├── merge-descriptors@1.0.0
+├── utils-merge@1.0.0
+├── cookie-signature@1.0.6
+├── methods@1.1.1
+├── cookie@0.1.2
+├── fresh@0.2.4
+├── escape-html@1.0.1
+├── range-parser@1.0.2
+├── content-type@1.0.1
+├── vary@1.0.0
+├── parseurl@1.3.0
+├── content-disposition@0.5.0
+├── commander@2.6.0
+├── depd@1.0.1
+├── etag@1.5.1 (crc@3.2.1)
+├── mkdirp@0.5.0 (minimist@0.0.8)
+├── proxy-addr@1.0.7 (forwarded@0.1.0, ipaddr.js@0.1.9)
+├── debug@2.1.3 (ms@0.7.0)
+├── connect@2.29.1 (pause@0.0.1, response-time@2.3.0, vhost@3.0.0, on-headers@1.0.0, basic-auth-connect@1.0.0, bytes@1.0.0, cookie-parser@1.3.4, method-override@2.3.2, serve-static@1.9.2, connect-timeout@1.6.1, qs@2.4.1, serve-favicon@2.2.0, http-errors@1.3.1, finalhandler@0.3.4, morgan@1.5.2, type-is@1.6.1, errorhandler@1.3.5, body-parser@1.12.3, compression@1.4.3, serve-index@1.6.3, express-session@1.10.4, csurf@1.7.0, multiparty@3.3.2)
+└── send@0.12.2 (destroy@1.0.3, ms@0.7.0, mime@1.3.4, on-finished@2.2.1)
+
+# npm install socket.io -g
+socket.io@1.3.5 /usr/local/lib/node_modules/socket.io
+├── has-binary-data@0.1.3 (isarray@0.0.1)
+├── debug@2.1.0 (ms@0.6.2)
+├── socket.io-parser@2.2.4 (isarray@0.0.1, debug@0.7.4, component-emitter@1.1.2, benchmark@1.0.0, json3@3.2.6)
+├── socket.io-adapter@0.3.1 (object-keys@1.0.1, debug@1.0.2, socket.io-parser@2.2.2)
+├── socket.io-client@1.3.5 (to-array@0.1.3, indexof@0.0.1, component-bind@1.0.0, debug@0.7.4, backo2@1.0.2, object-component@0.0.3, component-emitter@1.1.2, has-binary@0.1.6, parseuri@0.0.2, engine.io-client@1.5.1)
+└── engine.io@1.5.1 (base64id@0.1.0, debug@1.0.3, engine.io-parser@1.2.1, ws@0.5.0)
+
+# npm install pty.js -g
+pty.js@0.2.7-1 /usr/local/lib/node_modules/pty.js
+├── extend@1.2.1
+└── nan@1.7.0
+
+# npm install forever -g
+forever@0.14.1 /usr/local/lib/node_modules/forever
+├── colors@0.6.2
+├── timespan@2.3.0
+├── optimist@0.6.1 (wordwrap@0.0.2, minimist@0.0.10)
+├── nssocket@0.5.3 (eventemitter2@0.4.14, lazy@1.0.11)
+├── winston@0.8.3 (cycle@1.0.3, stack-trace@0.0.9, eyes@0.1.8, isstream@0.1.2, async@0.2.10, pkginfo@0.3.0)
+├── cliff@0.1.10 (eyes@0.1.8, colors@1.0.3)
+├── nconf@0.6.9 (ini@1.3.3, async@0.2.9, optimist@0.6.0)
+├── forever-monitor@1.5.2 (watch@0.13.0, minimatch@1.0.0, ps-tree@0.0.3, broadway@0.3.6)
+├── flatiron@0.4.3 (optimist@0.6.0, director@1.2.7, broadway@0.3.6, prompt@0.2.14)
+└── utile@0.2.1 (deep-equal@1.0.0, ncp@0.4.2, async@0.2.10, i@0.3.3, mkdirp@0.5.0, rimraf@2.3.3)
+```
+
+#### 리모트 웹 터미널 설치하기
+
+```
+# git clone https://github.com/chjj/term.js/
+# cd term.js/example
+
+폴더 내의 index.html 과 index.js 를 본 패키지의 termjs-custom 폴더 안의 index.html 과 index.js 파일로 교체합니다.
+
+# forever index.js &
+```
 
