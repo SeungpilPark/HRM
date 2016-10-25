@@ -12,6 +12,8 @@
 
 [Java Api](document/javaApi.md)
 
+[Service recovery](document/recovery.md)
+
 
 ## HRM (Hadoop Remote Management) 
 
